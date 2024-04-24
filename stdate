@@ -1,0 +1,32 @@
+#!/bin/bash
+
+stdate() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: $0 filename"
+        return 1
+    fi
+
+    local main_file="$1"
+    local temp_file="${main_file%.txt}_temp.txt"
+
+    touch "$temp_file"
+
+    nano "$temp_file"
+
+    if [ -s "$temp_file" ]; then
+        local date_time=$(date +"%H.%M.%S %d.%m.%Y")
+
+        echo -e "\n__________________________________________\n$date_time\n" >> "$main_file"
+
+        cat "$temp_file" >> "$main_file"
+
+        rm "$temp_file"
+    else
+        echo "Temporary file is empty or editing is canceled."
+        rm "$temp_file"
+        return 1
+    fi
+}
+
+stdate "$@"
+
